@@ -28,6 +28,13 @@ class Tween(object):
         self.publisher_signature = self.config.get('publisher_signature')
         self.trigger = '/%s/' % self.publisher_signature
 
+        injector_name = self.config.pop('injector', 'topbottom')
+        injector_factory = fanstatic.registry.InjectorRegistry.instance().get(injector_name)
+        if injector_factory is None:
+            raise fanstatic.ConfigurationError(
+                'No injector found for name %s' % injector_name)
+        self.injector = injector_factory(self.config)
+
     def __call__(self, request):
 
         # publisher
@@ -60,7 +67,7 @@ class Tween(object):
             return response
 
         if needed.has_resources():
-            result = needed.render_topbottom_into_html(response.body)
+            result = self.injector(response.body, needed, request, response)
             response.body = ''
             response.write(result)
         fanstatic.del_needed()

@@ -4,7 +4,8 @@ Changelog
 0.5 (unreleased)
 ----------------
 
-- No changes yet.
+- Added support for fanstatic injector plugins
+  [dokai]
 
 
 0.4 (2012-09-21)
